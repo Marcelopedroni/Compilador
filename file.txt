@@ -1,0 +1,23 @@
+program file;	
+	begin
+		declare nome text;
+		declare idade int;
+		declare salario float;
+		declare status text;
+		
+		@
+		
+		nome <- "leonardo";
+		idade <- "21";
+		salario <- "2750.95"
+		
+		if(idade $gt 18) then
+			begin				
+				status <- "Maior de idade";
+			end
+		else
+			begin
+				status <- "Menor de idade;
+			end
+	end
+end_prog;  {# bla
