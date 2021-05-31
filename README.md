@@ -2,7 +2,7 @@
 Trabalho da disciplina de Compiladores
 
 Grupo: Os Dijkstra's
-Membros:
+<br>Membros:
  - Bruno Marcos Luz de Macedo
  - Christopher Dal Col Alves
  - Enrico Ciaramello Del Tio
