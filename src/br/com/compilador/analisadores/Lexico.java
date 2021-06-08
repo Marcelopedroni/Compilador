@@ -7,21 +7,17 @@ package br.com.compilador.analisadores;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.util.List;
 
 import br.com.compilador.TabSimbolos;
-import br.com.compilador.symbols.FirstFollowSets;
-import br.com.compilador.symbols.NonTerminalType;
-import br.com.compilador.symbols.Token;
-import br.com.compilador.symbols.TokenType;
+import br.com.compilador.token.Token;
+import br.com.compilador.token.TokenType;
 import br.com.compilador.utils.ErrorHandler;
 import br.com.compilador.utils.ErrorType;
 import br.com.compilador.utils.FileLoader;
 
 public class Lexico {
-	private Token buffer;
 	private FileLoader fileLoader;
-	private StringBuilder lexema;
+	private StringBuilder lexema = null;
 	private char caracter;
 	private long tk_col;
 	private long tk_lin;
@@ -30,19 +26,9 @@ public class Lexico {
 		fileLoader = new FileLoader(filename);
 	}
 
-	public void storeToken(Token t) {
-		this.buffer = t;
-	}
-	
 	public Token nextToken() {
 		Token token = null;
 
-		if (buffer != null) {
-			token = buffer;
-			buffer = null;
-			return token;
-		}
-		
 		try {
 			// Trata entrada até encontrar um token
 			while (token == null) {
@@ -186,7 +172,6 @@ public class Lexico {
 	}	
 
 	private Token processaRelop() throws IOException {	
-		Token token = null;
 		try {
 			char c = getNextChar();
 			//Tratando o caso $df
@@ -234,8 +219,7 @@ public class Lexico {
 		catch (EOFException e){
 			fileLoader.resetLastChar();	
 		}	
-		token = TabSimbolos.getInstance().addToken(lexema.toString(), tk_lin, tk_col);
-		return token;
+		return new Token(TokenType.RELOP, lexema.toString(), tk_lin, tk_col);
 	}
 	
 	private Token processaAssign() throws IOException {
@@ -248,12 +232,10 @@ public class Lexico {
                                                         tk_lin, tk_col);
 			return null;
 		}
-		
 		return new Token(TokenType.ASSIGN, lexema.toString(), tk_lin, tk_col);
 	}
 	
 	private Token processaNum() throws IOException {
-	
 		return new Token(TokenType.NUM_INT, "NUM_INT STUB");
 	}
 	
@@ -276,19 +258,5 @@ public class Lexico {
         
         token = TabSimbolos.getInstance().addToken(lexema.toString(), tk_lin, tk_col);
         return token;
-	}
-	
-	public Token sincronizaEmTokens(List<TokenType> tokens) {
-		Token t = null;
-		if (tokens == null) return t;
-		do {
-			t = nextToken();
-		} while(!tokens.contains(t.getTokenType()));
-		return t;
-	}
-	
-	public Token sincronizaEmFollow(NonTerminalType nt) {
-		List<TokenType> l = FirstFollowSets.getInstance().getFollowFromNT(nt);
-		return sincronizaEmTokens(l);
 	}
 }

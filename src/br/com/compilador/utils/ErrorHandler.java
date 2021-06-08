@@ -8,8 +8,6 @@ package br.com.compilador.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.compilador.symbols.Token;
-
 public class ErrorHandler
 {
 
@@ -48,7 +46,7 @@ public class ErrorHandler
 		System.out.printf("|%25s %12s", "Erros", "|");
 		System.out.println("\n---------------------------------------");
 	}
-	
+
 	/**
 	 * Método responsável por retornar a instância única da classe
 	 */

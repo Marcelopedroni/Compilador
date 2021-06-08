@@ -8,8 +8,8 @@ package br.com.compilador.analisadores;
 import java.io.IOException;
 
 import br.com.compilador.TabSimbolos;
-import br.com.compilador.symbols.Token;
-import br.com.compilador.symbols.TokenType;
+import br.com.compilador.token.Token;
+import br.com.compilador.token.TokenType;
 import br.com.compilador.utils.ErrorHandler;
 
 public class Sintatico
@@ -24,11 +24,8 @@ public class Sintatico
 	}
 
 	public void processar()
-	{  
-		derivaS();
-		
+	{
 		// TODO: Código de teste para exercitar o Analisador Léxico
-		/*
 		System.out.println("------------------------------------------------");
 		System.out.println("( X , Y )|   Token    ||          Lexema       |");
 		System.out.println("------------------------------------------------"); 
@@ -39,49 +36,6 @@ public class Sintatico
 		System.out.println("------------------------------------------------");
 
 		TabSimbolos.getInstance().printReport(); 
-		*/
-		
 		ErrorHandler.getInstance().gerarRelatorio();
 	}
-	
-	private void derivaS() {
-		Token t = lexico.nextToken();
-/*
-  if (t != program) {
-     geraErro()
-     while (t != term) {
-         t = next()
-     }
-  } else {
-     t = next()
-     if (t != id) {
-        geraErro()
-        while (t != term) {
-           t = next()
-        } 
-     } else {
-        t = next()
-        if (t != term) geraErro()
-     }
-  }
-  derivaBloco()
-  t = next()
-  if (t != end_prog) geraErro()
-  t = next()
-  if (t != term) geraErro()
- */
-	}
-	
-	private void derivaBLOCO() {
-		
-	}
-
-	private void derivaCMDS() {
-		
-	}
-	
-	private void derivaCMD() {
-		
-	}
-	
 }
