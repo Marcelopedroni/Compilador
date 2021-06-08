@@ -3,9 +3,10 @@ program file;
 		declare nome text;
 		declare idade int;
 		declare salario float;
-		declare status text;
+		declare status text; 
 		
 		@
+		
 		
 		nome <- "leonardo";
 		idade <- "21";

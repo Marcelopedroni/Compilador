@@ -185,8 +185,57 @@ public class Lexico {
 		return new Token(TokenType.LITERAL, lexema.toString(), tk_lin, tk_col);
 	}	
 
-	private Token processaRelop() throws IOException {
-		return new Token(TokenType.RELOP, "RELOP STUB");
+	private Token processaRelop() throws IOException {	
+		Token token = null;
+		try {
+			char c = getNextChar();
+			//Tratando o caso $df
+			if (c == 'd') {
+				c = getNextChar();
+				if (c != 'f') {
+					ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
+																lexema.toString(),
+																"Operador relacional inválido",
+																tk_lin, tk_col);	
+					resetLastChar();
+				}
+			}
+			//Tratando o caso $eq
+			else if (c == 'e') {
+				c = getNextChar();
+				if (c != 'q') {
+					ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
+																lexema.toString(),
+																"Operador relacional inválido",
+																tk_lin, tk_col);	
+					resetLastChar();
+				}
+			}
+			//Tratando casos $gt, $ge, $lt e $le
+			else if (c == 'g' || c == 'l') {
+				c = getNextChar();
+				if (c != 'e' && c != 't') {
+					ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
+																lexema.toString(),
+																"Operador relacional inválido",
+																tk_lin, tk_col);
+					resetLastChar();
+				}
+			}
+			//Tratando casos onde há erros de digitação.
+			else {	
+					ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
+																lexema.toString(),
+																"Operador relacional inválido",
+																tk_lin, tk_col);
+					resetLastChar();
+			}
+		}
+		catch (EOFException e){
+			fileLoader.resetLastChar();	
+		}	
+		token = TabSimbolos.getInstance().addToken(lexema.toString(), tk_lin, tk_col);
+		return token;
 	}
 	
 	private Token processaAssign() throws IOException {
@@ -199,10 +248,12 @@ public class Lexico {
                                                         tk_lin, tk_col);
 			return null;
 		}
+		
 		return new Token(TokenType.ASSIGN, lexema.toString(), tk_lin, tk_col);
 	}
 	
 	private Token processaNum() throws IOException {
+	
 		return new Token(TokenType.NUM_INT, "NUM_INT STUB");
 	}
 	
