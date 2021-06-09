@@ -183,6 +183,7 @@ public class Lexico {
 																"Operador relacional inválido",
 																tk_lin, tk_col);	
 					resetLastChar();
+					return null;
 				}
 			}
 			//Tratando o caso $eq
@@ -194,6 +195,7 @@ public class Lexico {
 																"Operador relacional inválido",
 																tk_lin, tk_col);	
 					resetLastChar();
+					return null;
 				}
 			}
 			//Tratando casos $gt, $ge, $lt e $le
@@ -205,6 +207,7 @@ public class Lexico {
 																"Operador relacional inválido",
 																tk_lin, tk_col);
 					resetLastChar();
+					return null;
 				}
 			}
 			//Tratando casos onde há erros de digitação.
@@ -214,6 +217,7 @@ public class Lexico {
 																"Operador relacional inválido",
 																tk_lin, tk_col);
 					resetLastChar();
+					return null;
 			}
 		}
 		catch (EOFException e){
@@ -236,6 +240,17 @@ public class Lexico {
 	}
 	
 	private Token processaNum() throws IOException {
+		char c = getNextChar();
+		if (Character.isDigit(c)) {
+		try {
+			c = getNextChar();
+			
+			}
+		
+		catch (EOFException e){
+			fileLoader.resetLastChar();
+		}
+	}
 		return new Token(TokenType.NUM_INT, "NUM_INT STUB");
 	}
 	
