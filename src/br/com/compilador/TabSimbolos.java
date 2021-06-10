@@ -60,6 +60,37 @@ public class TabSimbolos {
 		return token;
 	}
 	
+	public Token addTokenNum_Int(String lexema, long linha, long coluna) {
+		Token token = null;
+
+		if (tab.containsKey(lexema)) {
+			token = tab.get(lexema);
+			token.setLinha(linha);
+			token.setColuna(coluna);
+		} else {
+			token = new Token(TokenType.NUM_INT, lexema, linha, coluna);
+			tab.put(lexema, token);
+		}
+
+		return token;
+	}
+	
+	public Token addTokenNum_Float(String lexema, long linha, long coluna) {
+		Token token = null;
+
+		if (tab.containsKey(lexema)) {
+			token = tab.get(lexema);
+			token.setLinha(linha);
+			token.setColuna(coluna);
+		} else {
+			token = new Token(TokenType.NUM_FLOAT, lexema, linha, coluna);
+			tab.put(lexema, token);
+		}
+
+		return token;
+	}
+
+	
 	public void printReport()
 	{
 		cabecalhoTabela();
