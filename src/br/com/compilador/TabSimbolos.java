@@ -55,7 +55,7 @@ public class TabSimbolos {
 		} else {
 			token = new Token(TokenType.ID, lexema, linha, coluna);
 			tab.put(lexema, token);
-		}
+		} 
 
 		return token;
 	}

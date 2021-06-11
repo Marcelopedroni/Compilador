@@ -171,6 +171,48 @@ public class Lexico {
 		return new Token(TokenType.LITERAL, lexema.toString(), tk_lin, tk_col);
 	}	
 
+	
+	
+	private Token processaAssign() throws IOException {
+		char c = getNextChar();
+		try {
+			if (c != '-') {
+				// Registra Erro Léxico
+				ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
+															lexema.toString(),
+															"Operador inválido",
+															tk_lin, tk_col);
+				resetLastChar();
+				return null;
+			}
+		}
+		catch (EOFException e) {
+			fileLoader.resetLastChar();
+		}
+		return new Token(TokenType.ASSIGN, lexema.toString(), tk_lin, tk_col);
+	}
+
+	private Token processaID() throws IOException {
+        Token token = null;
+        try
+		{
+        	char c = getNextChar();
+        	while (Character.isLetter(c) || c == '_' || Character.isDigit(c)) {
+        		 c = getNextChar();
+            }
+			resetLastChar();
+		}
+        catch (EOFException e)
+		{
+        	// Quebra de padrão provocado pelo fim do arquivo
+        	// Ainda retornaremos o token
+        	fileLoader.resetLastChar();
+		}
+        
+        token = TabSimbolos.getInstance().addToken(lexema.toString(), tk_lin, tk_col);
+        return token;
+	}
+	
 	private Token processaRelop() throws IOException {	
 		try {
 			char c = getNextChar();
@@ -226,25 +268,6 @@ public class Lexico {
 		return new Token(TokenType.RELOP, lexema.toString(), tk_lin, tk_col);
 	}
 	
-	private Token processaAssign() throws IOException {
-		char c = getNextChar();
-		try {
-			if (c != '-') {
-				// Registra Erro Léxico
-				ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
-															lexema.toString(),
-															"Operador inválido",
-															tk_lin, tk_col);
-				resetLastChar();
-				return null;
-			}
-		}
-		catch (EOFException e) {
-			fileLoader.resetLastChar();
-		}
-		return new Token(TokenType.ASSIGN, lexema.toString(), tk_lin, tk_col);
-	}
-
 	private Token processaNum() throws IOException {
         Token token = null;
         try
@@ -265,13 +288,13 @@ public class Lexico {
 					resetLastChar();
 					return null;
 				}
-				// Após o '.' leu um número.
+				// Após o '.' leu um número. 12.2376367)
 				else {
-					while (Character.isDigit(c)) {
+					while (Character.isDigit(c)) { 
 						c = getNextChar();
 					}
 					// Saiu do while, ou leu 'E' ('e') ou o número acabou.
-					if (c == 'E' || c == 'e') {
+					if (c == 'E' || c == 'e') { 
 						c = getNextChar();
 						// Se leu um 'E' ou 'e' é obrigatório que o próximo char seja um número, senão quebra.
 						if (!Character.isDigit(c)) {
@@ -300,6 +323,7 @@ public class Lexico {
         	// Números Inteiros
         	// Saiu do 1º while, pode ter lido 'E', 'e' ou o número acabou.
         	// Se leu 'E' ou 'e'.
+        	
         	else if (c == 'E' || c == 'e') {
         		c = getNextChar();
         		// Após ler 'E' ou 'e' é obrigatório ler número, senão quebra.
@@ -320,7 +344,7 @@ public class Lexico {
 				token = TabSimbolos.getInstance().addTokenNum_Int(lexema.toString(), tk_lin, tk_col);
         	}
         	// Não leu 'E', 'e' ou '.', indicando fim do número inteiro, retornando Token Num_Int.
-        	else {
+        	else { 
         		resetLastChar();
 				token = TabSimbolos.getInstance().addTokenNum_Int(lexema.toString(), tk_lin, tk_col);
         	}
@@ -332,27 +356,6 @@ public class Lexico {
         	fileLoader.resetLastChar();
 		}
         
-        return token;
-	}
-
-	private Token processaID() throws IOException {
-        Token token = null;
-        try
-		{
-        	char c = getNextChar();
-        	while (Character.isLetter(c) || c == '_' || Character.isDigit(c)) {
-        		 c = getNextChar();
-            }
-			resetLastChar();
-		}
-        catch (EOFException e)
-		{
-        	// Quebra de padrão provocado pelo fim do arquivo
-        	// Ainda retornaremos o token
-        	fileLoader.resetLastChar();
-		}
-        
-        token = TabSimbolos.getInstance().addToken(lexema.toString(), tk_lin, tk_col);
         return token;
 	}
 }
