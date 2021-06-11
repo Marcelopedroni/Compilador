@@ -11,9 +11,10 @@ program file;
 		idade <- "21";
 		salario <- "2750.95"
 		
-		if(idade $df 12.12E12 ) then
+		if(idade $df12221.1e2) then
 			begin				
 				status <- "Maior de idade";
+				int a = 12313;
 			end
 		else
 			begin

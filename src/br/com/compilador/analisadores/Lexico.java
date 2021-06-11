@@ -246,151 +246,92 @@ public class Lexico {
 	}
 
 	private Token processaNum() throws IOException {
-		Token token = null;
-		char c;
-		boolean validation = true;
-		try {
-		while (validation) {
-			c = getNextChar();
-			//5 Possibilidades: '.', Exp, Número, ' ' e ERRO.
-			//1ª Possibilidade: '.'
-			//Números Float
-			if (c == '.') {
-				//Após o '.' é obrigatório ter um número.
+        Token token = null;
+        try
+		{
+        	char c = getNextChar();
+        	while (Character.isDigit(c)) {
+        		 c = getNextChar();
+            }
+        	// Números Float
+        	if (c == '.') {
 				c = getNextChar();
+				// Após o '.' é obrigatório haver pelo menos um número, senão quebra.
 				if (!Character.isDigit(c)) {
 					ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
 																lexema.toString(),
 																"Número inválido",
 																tk_lin, tk_col);
 					resetLastChar();
-					validation = false;
+					return null;
 				}
-				//Encontrou um número após o '.'
+				// Após o '.' leu um número.
 				else {
-					//Pode encontrar outros números ou 'E' ou ' '.
-					boolean validationFloat = true;
-					while (validationFloat) {
+					while (Character.isDigit(c)) {
 						c = getNextChar();
-						//Caso encontre 'E'
-						if (c == 'E') {
+					}
+					// Saiu do while, ou leu 'E' ('e') ou o número acabou.
+					if (c == 'E' || c == 'e') {
+						c = getNextChar();
+						// Se leu um 'E' ou 'e' é obrigatório que o próximo char seja um número, senão quebra.
+						if (!Character.isDigit(c)) {
+							ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
+																		lexema.toString(),
+																		"Número inválido",
+																		tk_lin, tk_col);
+							resetLastChar();
+							return null;
+						}
+						while (Character.isDigit(c)) {
 							c = getNextChar();
-							//Após ler o 'E' é obrigatório haver um número, senão quebra.
-							if (!Character.isDigit(c)) {
-								ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
-																			lexema.toString(),
-																			"Número inválido",
-																			tk_lin, tk_col);
-								resetLastChar();
-								validationFloat = false;
-								validation = false;
-							}
-							else {
-								//Após o 'E' encontrou um número e deu seguimento. Agora temos 2 possibilidades: ' ' ou números.
-								boolean exp_float = true;
-								while (exp_float) {
-									c = getNextChar();
-									//Caso encontre ' ', acabou o número e foi aceito.
-									if (c == ' ') {
-										token = TabSimbolos.getInstance().addTokenNum_Float(lexema.toString(), tk_lin, tk_col);
-										exp_float = false;
-										validationFloat = false;
-										validation = false;
-									}
-									//Caso encontre qualquer coisa que não seja ' ' ou números, quebra.
-									else if (!Character.isDigit(c)) {
-										ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
-																					lexema.toString(),
-																					"Número inválido",
-																					tk_lin, tk_col);
-										resetLastChar();
-										exp_float = false;
-										validationFloat = false;
-										validation = false;
-									}
-								}
-							}
 						}
-						//Caso encontre ' ', acabou o número e foi aceito.
-						else if (c == ' ') {
-							token = TabSimbolos.getInstance().addTokenNum_Float(lexema.toString(), tk_lin, tk_col);
-							validationFloat = false;
-							validation = false;
-						}
-						//Caso encontre qualquer coisa fora Número, ' ' e 'E'
-						else if (!Character.isDigit(c) && c!= 'E' && c != ' ') {
-							ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
-																		lexema.toString(),
-																		"Número inválido",
-																		tk_lin, tk_col);
-							resetLastChar();
-							validationFloat = false;
-							validation = false;
-						}
-					}	
-				}		
-			}
-			//2ª Possibilidade: 'E'
-			//Números Inteiros
-			else if (c == 'E') {
-				//Após ler um 'E' é obrigatório ler um número, senão quebra.
-				c = getNextChar();
-				if (!Character.isDigit(c)) {
-					ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
-																lexema.toString(),
-																"Número inválido",
-																tk_lin, tk_col);
-					resetLastChar();
-					validation = false;
-				}
-				//Se leu um número, espera-se que todos os demais caractéres sejam números até o critério de parada que é o ' '.
-				else {
-					boolean exp = true;
-					while (exp) {
-						c = getNextChar();
-						//2 novas possibilidades: Números ou ' '.
-						if (c == ' ') {
-							token = TabSimbolos.getInstance().addTokenNum_Int(lexema.toString(), tk_lin, tk_col);
-							validation = false;
-							exp = false;
-						}
-						//Se ler qualquer coisa fora dígito ou ' ', quebra.
-						else if (!Character.isDigit(c) && c != ' ') {
-							ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
-																		lexema.toString(),
-																		"Número inválido",
-																		tk_lin, tk_col);
-							resetLastChar();
-							validation = false;
-							exp = false;
-						}
+						// Saiu do while, o número acabou, retorna Token Num_Float.
+						resetLastChar();
+						token = TabSimbolos.getInstance().addTokenNum_Float(lexema.toString(), tk_lin, tk_col);
+					}
+					
+					// Não leu 'E' ou 'e', ou seja o número acabou, retornando Token Num_Float. Ex: 1.12.
+					else {
+						resetLastChar();
+						token = TabSimbolos.getInstance().addTokenNum_Float(lexema.toString(), tk_lin, tk_col);
 					}
 				}
 			}
-			//3ª Possibilidade: Números
-			else if (Character.isDigit(c)) {
-				validation = true;
-			}
-			//4ª Possibilidade: ' '
-			else if (c == ' ') {
-				token = TabSimbolos.getInstance().addTokenNum_Int(lexema.toString(), tk_lin, tk_col);
-				validation = false;
-			}
-			//5ª Possibilidade: Erro
-			else {
-				ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
-															lexema.toString(),
-															"Número inválido",
-															tk_lin, tk_col);
+        	// Números Inteiros
+        	// Saiu do 1º while, pode ter lido 'E', 'e' ou o número acabou.
+        	// Se leu 'E' ou 'e'.
+        	else if (c == 'E' || c == 'e') {
+        		c = getNextChar();
+        		// Após ler 'E' ou 'e' é obrigatório ler número, senão quebra.
+				if (!Character.isDigit(c)) {
+					ErrorHandler.getInstance().addCompilerError(ErrorType.LEXICO, 
+																lexema.toString(),
+																"Número inválido",
+																tk_lin, tk_col);
+					resetLastChar();
+					return null;
+				}
+				// Lendo todos números subsequentes ao 'E' ou 'e'.
+				while (Character.isDigit(c)) {
+					c = getNextChar();
+				}
+				// Leu qualquer coisa que não números, indicando fim do número, retornando o Token Num_Int
 				resetLastChar();
-				validation = false;
-			}
+				token = TabSimbolos.getInstance().addTokenNum_Int(lexema.toString(), tk_lin, tk_col);
+        	}
+        	// Não leu 'E', 'e' ou '.', indicando fim do número inteiro, retornando Token Num_Int.
+        	else {
+        		resetLastChar();
+				token = TabSimbolos.getInstance().addTokenNum_Int(lexema.toString(), tk_lin, tk_col);
+        	}
 		}
-			
+        catch (EOFException e)
+		{
+        	// Quebra de padrão provocado pelo fim do arquivo
+        	// Ainda retornaremos o token
+        	fileLoader.resetLastChar();
 		}
-		catch (EOFException e) {
-			fileLoader.resetLastChar();
-		}
+        
         return token;
 	}
 
