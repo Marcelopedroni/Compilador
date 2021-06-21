@@ -1,0 +1,13 @@
+Observações de Melhorias:
+
+---------Analisador Léxico---------
+1. Função ProcessaRelop(): 
+	i.		Quando um erro é anotado, o caractere que gerou o erro deve fazer parte do lexema de erro e não deve ser devolvido à entrada.
+
+	Função ProcessaNum():
+ 	i.		O reconhecimento de constantes numéricas não deveria ter nada a ver com a Tab. Símbolos. Buscar alternativa à esta solução provisória.
+ 	ii.		Reconhecer números em formato científico precedidos de +/- Ex: 10E+5 || 10E-5
+ 	iii.	Quando um erro é anotado, o caractere que gerou o erro deve fazer parte do lexema de erro e não deve ser devolvido à entrada.
+
+---------Analisador Sintático---------
+1.	Implementar o Analisador Sintático completo
