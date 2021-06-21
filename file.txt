@@ -10,7 +10,7 @@ program file;
 		nome <- "leonardo";
 		idade <- "21";
 		salario <- "2750.95"
-		if(idade $lt 1E62) then 
+		if(idade $l 1E62) then 
 			begin				
 				status <- "Maior de idade";
 				int a = 12313;
